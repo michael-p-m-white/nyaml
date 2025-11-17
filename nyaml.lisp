@@ -358,18 +358,18 @@
  (:text t))
 
 ;; rule 64
-(define-parameterized-rule s-indent-< (n)
+(define-parameterized-rule s-indent-less (n)
   `(or
     ,@(loop for i from (1- n) downto 0
-	 collect `(and ,(prule 's-indent i)
-		       (& (! s-space))))
+	    collect `(and ,(prule 's-indent i)
+		          (& (! s-space))))
     )
   (:text t))
 
 ;; rule 65
-(define-parameterized-rule s-indent-<= (n)
-  `(or ,(prule 's-indent n) ,(prule 's-indent-< n))
- (:text t))
+(define-parameterized-rule s-indent-less= (n)
+  `(or ,(prule 's-indent n) ,(prule 's-indent-less n))
+  (:text t))
 
 (defrule s-separate-in-line
     (or
@@ -398,7 +398,7 @@
 (define-parameterized-rule l-empty (n (c :block-out :block-in :flow-out :flow-in))
   `(and
     (or ,(prule 's-line-prefix n c)
-	,(prule 's-indent-< n))
+	,(prule 's-indent-less n))
     b-as-line-feed)
   (:constant #\Newline))
 
@@ -1291,10 +1291,10 @@
 ;; rule 167
 (define-parameterized-rule l-strip-empty (n)
   `(and
-   (*
-    (and ,(prule 's-indent-<= n)
-	 b-non-content))
-   (? ,(prule 'l-trail-comments n)))
+    (*
+     (and ,(prule 's-indent-less= n)
+	  b-non-content))
+    (? ,(prule 'l-trail-comments n)))
   (:constant nil))
 
 ;; rule 168
@@ -1309,7 +1309,7 @@
 ;;rule 169
 (define-parameterized-rule l-trail-comments (n)
   `(and
-    ,(prule 's-indent-< n)
+    ,(prule 's-indent-less n)
     c-nb-comment-text
     b-comment
     l-comment-*))
